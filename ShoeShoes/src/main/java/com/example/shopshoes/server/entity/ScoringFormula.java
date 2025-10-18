@@ -1,0 +1,37 @@
+package com.example.shopshoes.server.entity;
+
+import com.example.shopshoes.server.entity.base.PrimaryEntity;
+import com.example.shopshoes.server.infrastructure.constant.Status;
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.math.BigDecimal;
+
+@Entity
+@Getter
+@Setter
+@ToString
+@Builder
+@Table(name = "scoring_formula")
+@AllArgsConstructor
+@NoArgsConstructor
+public class ScoringFormula extends PrimaryEntity {
+
+    @Column(name = "exchange_rate_poin")
+    private BigDecimal exchangeRatePoin;
+
+    @Column(name = "exchange_rate_money")
+    private BigDecimal exchangeRateMoney;
+
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
+    @Transient
+    public int ConvertMoneyToPoints(BigDecimal totalMoney){
+        return totalMoney.divide(exchangeRatePoin, 0, BigDecimal.ROUND_DOWN).intValue();
+    }
+    @Transient
+    public BigDecimal  ConvertPoinToMoney(int poin){
+        return BigDecimal.valueOf(poin).multiply(exchangeRateMoney);
+    }
+}
